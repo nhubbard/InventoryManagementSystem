@@ -19,7 +19,8 @@ import javax.swing.JOptionPane;
 /***
  * Refactoring name: PULL UP METHOD
  * To remove duplication of code for the method buildTableModel() in both classes UserDAO.java and SupplierDAO.java,
- * Pull up method refactoring is performed and method is pulled from both classes and is kept in the new class BuildTableModel.java class
+ * Pull up method refactoring is performed and method is pulled from both classes and is kept in the new class
+ * BuildTableModel.java class
  * The class BuildTableModel.java is then extended to two classes UserDAO.java and SupplierDAO.java.
  */
 public class SupplierDAO extends BuildTableModel {
@@ -39,7 +40,8 @@ public class SupplierDAO extends BuildTableModel {
 
     public void addSupplierDAO(SupplierDTO supplierdto) {
         try {
-            String query = "SELECT * FROM suppliers WHERE fullname='" + supplierdto.getFullName() + "' AND location='" + supplierdto.getLocation() + "' AND phone='" + supplierdto.getPhone() + "'";
+            String query = "SELECT * FROM suppliers WHERE fullname='" + supplierdto.getFullName() + "' AND " +
+                "location='" + supplierdto.getLocation() + "' AND phone='" + supplierdto.getPhone() + "'";
             rs = stmt.executeQuery(query);
             if (rs.next()) {
                 JOptionPane.showMessageDialog(null, "Same Supplier has already been added!");
@@ -54,7 +56,7 @@ public class SupplierDAO extends BuildTableModel {
     public void addFunction(SupplierDTO supplierdto) {
         try {
             String supplierCode = null;
-            String oldSupplierCode = null;
+            String oldSupplierCode;
             String query1 = "SELECT * FROM suppliers";
             rs = stmt.executeQuery(query1);
             if (!rs.next()) {
@@ -64,13 +66,13 @@ public class SupplierDAO extends BuildTableModel {
                 rs = stmt.executeQuery(query2);
                 if (rs.next()) {
                     oldSupplierCode = rs.getString("suppliercode");
-                    Integer scode = Integer.parseInt(oldSupplierCode.substring(3));
+                    int scode = Integer.parseInt(oldSupplierCode.substring(3));
                     scode++;
                     supplierCode = "sup" + scode;
                 }
             }
             String q = "INSERT INTO suppliers VALUES(null,?,?,?,?)";
-            pstmt = (PreparedStatement) con.prepareStatement(q);
+            pstmt = con.prepareStatement(q);
             pstmt.setString(1, supplierCode);
             pstmt.setString(2, supplierdto.getFullName());
             pstmt.setString(3, supplierdto.getLocation());
@@ -85,7 +87,7 @@ public class SupplierDAO extends BuildTableModel {
     public void editSupplierDAO(SupplierDTO supplierdto) {
         try {
             String query = "UPDATE suppliers SET suppliercode=?,fullname=?,location=?,phone=? WHERE suppliercode=?";
-            pstmt = (PreparedStatement) con.prepareStatement(query);
+            pstmt = con.prepareStatement(query);
             pstmt.setString(1, supplierdto.getSupplierCode());
             pstmt.setString(2, supplierdto.getFullName());
             pstmt.setString(3, supplierdto.getLocation());
@@ -96,7 +98,7 @@ public class SupplierDAO extends BuildTableModel {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Nothing updated! Click the table data first!");
         }
-    }//end of method editCustomerDTO
+    }
 
     public void deleteSupplierDAO(String value) {
         try {
@@ -106,44 +108,26 @@ public class SupplierDAO extends BuildTableModel {
             pstmt.executeUpdate();
             JOptionPane.showMessageDialog(null, "Deleted..");
         } catch (SQLException e) {
-
+            throw new RuntimeException(e);
         }
     }
 
     public ResultSet getQueryResult() {
         try {
-            String query = "SELECT suppliercode AS SupplierCode, fullname AS Name, location as Address, phone AS Phone FROM suppliers";
+            String query = "SELECT suppliercode AS SupplierCode, fullname AS Name, location as Address, phone AS " +
+                "Phone FROM suppliers";
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return rs;
-    }//end of method getQueryResult
+    }
 
-    /*
-       public ResultSet getCreditSuppliersQueryResult() {
-           try {
-               String query = "SELECT * FROM suppliers WHERE credit>0";
-               rs = stmt.executeQuery(query);
-           } catch (SQLException e) {
-               e.printStackTrace();
-           }
-           return rs;
-       }
-
-       public ResultSet getDebitSuppliersQueryResult() {
-           try {
-               String query = "SELECT * FROM suppliers WHERE credit=0";
-               rs = stmt.executeQuery(query);
-           } catch (SQLException e) {
-               e.printStackTrace();
-           }
-           return rs;
-       }
-      */
     public ResultSet getSearchSuppliersQueryResult(String searchTxt) {
         try {
-            String query = "SELECT suppliercode AS SupplierCode, fullname AS Name, location as Address, phone AS Phone FROM suppliers WHERE fullname LIKE '%" + searchTxt + "%' OR location LIKE '%" + searchTxt + "%' OR suppliercode LIKE '%" + searchTxt + "%' OR phone LIKE '%" + searchTxt + "%'";
+            String query = "SELECT suppliercode AS SupplierCode, fullname AS Name, location as Address, phone AS " +
+                "Phone FROM suppliers WHERE fullname LIKE '%" + searchTxt + "%' OR location LIKE '%" + searchTxt +
+                "%' OR suppliercode LIKE '%" + searchTxt + "%' OR phone LIKE '%" + searchTxt + "%'";
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();

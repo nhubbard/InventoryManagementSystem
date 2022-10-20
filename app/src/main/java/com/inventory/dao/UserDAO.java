@@ -21,7 +21,8 @@ import javax.swing.JOptionPane;
 /***
  * Refactoring name: PULL UP METHOD
  * To remove duplication of code for the method buildTableModel() in both classes UserDAO.java and SupplierDAO.java,
- * Pull up method refactoring is performed and method is pulled from both classes and is kept in the new class BuildTableModel.java class
+ * Pull up method refactoring is performed and method is pulled from both classes and is kept in the new class
+ * BuildTableModel.java class
  * The class BuildTableModel.java is then extended to two classes UserDAO.java and SupplierDAO.java.
  */
 public class UserDAO extends BuildTableModel {
@@ -41,7 +42,10 @@ public class UserDAO extends BuildTableModel {
 
     public void addUserDAO(UserDTO userdto, String user) {
         try {
-            String query = "SELECT * FROM users WHERE fullname='" + userdto.getFullName() + "' AND location='" + userdto.getLocation() + "' AND phone='" + userdto.getPhone() + "' AND category='" + userdto.getCategory() + "'";
+            String query =
+                "SELECT * FROM users WHERE fullname='" + userdto.getFullName() + "' AND location='" +
+                    userdto.getLocation() + "' AND phone='" + userdto.getPhone() + "' AND category='" +
+                    userdto.getCategory() + "'";
             rs = stmt.executeQuery(query);
             if (rs.next()) {
                 JOptionPane.showMessageDialog(null, "Same User has already been added!");
@@ -51,25 +55,24 @@ public class UserDAO extends BuildTableModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }//end of method addUserDTO
+    }
 
     public void addFunction(UserDTO userdto, String user) {
         try {
             String username = null;
             String password = null;
-            String oldUsername = null;
+            String oldUsername;
             String encPass = null;
             String query1 = "SELECT * FROM users";
             rs = stmt.executeQuery(query1);
             if (!rs.next()) {
                 username = "user" + "1";
-                password = "user" + "1";
             } else {
                 String query2 = "SELECT * FROM users ORDER by id DESC";
                 rs = stmt.executeQuery(query2);
                 if (rs.next()) {
                     oldUsername = rs.getString("username");
-                    Integer ucode = Integer.parseInt(oldUsername.substring(4));
+                    int ucode = Integer.parseInt(oldUsername.substring(4));
                     ucode++;
                     username = "user" + ucode;
                     password = "user" + ucode;
@@ -77,8 +80,9 @@ public class UserDAO extends BuildTableModel {
                 encPass = new Users().encryptPassword(password);
             }
 
-            String query = "INSERT INTO users (fullname,location, phone, username, password, category) VALUES(?,?,?,?,?,?)";
-            pstmt = (PreparedStatement) con.prepareStatement(query);
+            String query = "INSERT INTO users (fullname,location, phone, username, password, category) VALUES(?,?,?," +
+                "?,?,?)";
+            pstmt = con.prepareStatement(query);
             pstmt.setString(1, userdto.getFullName());
             pstmt.setString(2, userdto.getLocation());
             pstmt.setString(3, userdto.getPhone());
@@ -97,7 +101,7 @@ public class UserDAO extends BuildTableModel {
     public void editUserDAO(UserDTO userdto) {
         try {
             String query = "UPDATE users SET fullname=?,location=?,phone=?,category=? WHERE username=?";
-            pstmt = (PreparedStatement) con.prepareStatement(query);
+            pstmt = con.prepareStatement(query);
             pstmt.setString(1, userdto.getFullName());
             pstmt.setString(2, userdto.getLocation());
             pstmt.setString(3, userdto.getPhone());
@@ -108,17 +112,17 @@ public class UserDAO extends BuildTableModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }//end of method editUserDTO
+    }
 
+    @SuppressWarnings("unused")
     public void editFunction(UserDTO userdto, String imgLink, File file) {
 
         try {
-            if (imgLink.equals("")) {
-
-            } else {
-                String query = "UPDATE users SET fullname=?,location=?,phone=?,username=?,password=?,category=?,image=? WHERE id=?";
+            if (!imgLink.equals("")) {
+                String query = "UPDATE users SET fullname=?,location=?,phone=?,username=?,password=?,category=?," +
+                    "image=? WHERE id=?";
                 FileInputStream fis = new FileInputStream(file);
-                pstmt = (PreparedStatement) con.prepareStatement(query);
+                pstmt = con.prepareStatement(query);
                 pstmt.setString(1, userdto.getFullName());
                 pstmt.setString(2, userdto.getLocation());
                 pstmt.setString(3, userdto.getPhone());
@@ -144,8 +148,9 @@ public class UserDAO extends BuildTableModel {
             pstmt.executeUpdate();
             JOptionPane.showMessageDialog(null, "Deleted..");
         } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        new Users().loadDatas();
+        new Users().loadData();
     }
 
     public ResultSet getQueryResult1() {

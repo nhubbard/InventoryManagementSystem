@@ -8,17 +8,11 @@ package com.inventory.dao;
 
 import com.inventory.database.ConnectionFactory;
 import com.inventory.dto.ProductDTO;
-import com.inventory.ui.CurrentStocks;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Vector;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.util.Vector;
 
 /**
  * @author ADMIN
@@ -27,7 +21,6 @@ public class ProductDAO {
     Connection con = null;
     PreparedStatement pstmt = null;
     Statement stmt = null;
-    ResultSet rs1 = null;
     Statement stmt1 = null;
     ResultSet rs = null;
 
@@ -82,6 +75,7 @@ public class ProductDAO {
         return rs;
     }
 
+    @SuppressWarnings("unused")
     public ResultSet getProductsName() {
         try {
             String query = "SELECT * FROM products";
@@ -135,10 +129,10 @@ public class ProductDAO {
         }
         return supplierCode;
     }
-    //getProductCode
 
     String productCode;
 
+    @SuppressWarnings("unused")
     public String getProductCode(String productsName) {
         try {
             String query = "SELECT productcode FROM products WHERE productname='" + productsName + "'";
@@ -154,6 +148,7 @@ public class ProductDAO {
 
     String customerCode;
 
+    @SuppressWarnings("unused")
     public String getCustomerCode(String customersName) {
         try {
             String query = "SELECT customercode FROM customers WHERE fullname='" + customersName + "'";
@@ -169,7 +164,9 @@ public class ProductDAO {
 
     public void addProductDAO(ProductDTO productdto) {
         try {
-            String query = "SELECT * FROM products WHERE productname='" + productdto.getProductName() + "' AND costprice='" + productdto.getCostPrice() + "' AND sellingprice='" + productdto.getSellingPrice() + "' AND brand='" + productdto.getBrand() + "'";
+            String query = "SELECT * FROM products WHERE productname='" + productdto.getProductName() + "' AND " +
+                "costprice='" + productdto.getCostPrice() + "' AND sellingprice='" + productdto.getSellingPrice() +
+                "' AND brand='" + productdto.getBrand() + "'";
             rs = stmt.executeQuery(query);
             if (rs.next()) {
                 JOptionPane.showMessageDialog(null, "Same Product has already been added!");
@@ -180,12 +177,12 @@ public class ProductDAO {
             e.printStackTrace();
         }
 
-    }//end of method addUserDTO
+    }
 
     public void addFunction(ProductDTO productdto) {
         try {
             String productCode = null;
-            String oldProductCode = null;
+            String oldProductCode;
             String query1 = "SELECT * FROM products";
             rs = stmt.executeQuery(query1);
             if (!rs.next()) {
@@ -195,13 +192,13 @@ public class ProductDAO {
                 rs = stmt.executeQuery(query2);
                 if (rs.next()) {
                     oldProductCode = rs.getString("productcode");
-                    Integer pcode = Integer.parseInt(oldProductCode.substring(4));
+                    int pcode = Integer.parseInt(oldProductCode.substring(4));
                     pcode++;
                     productCode = "prod" + pcode;
                 }
             }
             String q = "INSERT INTO products VALUES(null,?,?,?,?,?)";
-            pstmt = (PreparedStatement) con.prepareStatement(q);
+            pstmt = con.prepareStatement(q);
             pstmt.setString(1, productCode);
             pstmt.setString(2, productdto.getProductName());
             pstmt.setDouble(3, productdto.getCostPrice());
@@ -215,12 +212,11 @@ public class ProductDAO {
         }
     }
 
-    //    addPurchaseDAO
     public void addPurchaseDAO(ProductDTO productdto) {
 
         try {
             String q = "INSERT INTO purchaseinfo VALUES(null,?,?,?,?,?)";
-            pstmt = (PreparedStatement) con.prepareStatement(q);
+            pstmt = con.prepareStatement(q);
             pstmt.setString(1, productdto.getSupplierCode());
             pstmt.setString(2, productdto.getProductCode());
             pstmt.setString(3, productdto.getDate());
@@ -233,10 +229,10 @@ public class ProductDAO {
         }
 
         String productCode = productdto.getProductCode();
-        if (stocks.checkStock(productCode, stmt) == true) {
+        if (stocks.checkStock(productCode, stmt)) {
             try {
                 String q = "UPDATE currentstocks SET quantity=quantity+? WHERE productcode=?";
-                pstmt = (PreparedStatement) con.prepareStatement(q);
+                pstmt = con.prepareStatement(q);
                 pstmt.setDouble(1, productdto.getQuantity());
                 pstmt.setString(2, productdto.getProductCode());
 
@@ -244,10 +240,10 @@ public class ProductDAO {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (stocks.checkStock(productCode, stmt) == false) {
+        } else if (!stocks.checkStock(productCode, stmt)) {
             try {
                 String q = "INSERT INTO currentstocks VALUES(?,?)";
-                pstmt = (PreparedStatement) con.prepareStatement(q);
+                pstmt = con.prepareStatement(q);
 
                 pstmt.setString(1, productdto.getProductCode());
                 pstmt.setInt(2, productdto.getQuantity());
@@ -256,19 +252,13 @@ public class ProductDAO {
                 e.printStackTrace();
             }
         }
-
-        /***
-         * Refactoring name: MOVE METHOD
-         * Move method refactoring is implemented to improve cohesion and reduce coupling
-         * deleteStock() was present in this class which is moved to other class Stocks.java
-         */
         stocks.deleteStock(stmt);
     }
 
     public void editProductDAO(ProductDTO productdto) {
         try {
             String query = "UPDATE products SET productname=?,costprice=?,sellingprice=?,brand=? WHERE productcode=?";
-            pstmt = (PreparedStatement) con.prepareStatement(query);
+            pstmt = con.prepareStatement(query);
             pstmt.setString(1, productdto.getProductName());
             pstmt.setDouble(2, productdto.getCostPrice());
             pstmt.setDouble(3, productdto.getSellingPrice());
@@ -279,85 +269,7 @@ public class ProductDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }//end of method editUserDTO
-    
-   
-    /*
-    public void editStock1(ProductDTO productdto,int quantity,String pCode){
-        String productCode=productdto.getProductCode();
-                try {
-                    if(productdto.getQuantity()>quantity){
-                         String q = "UPDATE currentstocks SET productname=?,quantity=quantity+? WHERE productcode=?";
-                         pstmt = (PreparedStatement) con.prepareStatement(q);
-                         pstmt.setString(1, productdto.getProductName());
-                         int n=productdto.getQuantity()-quantity;
-                         pstmt.setDouble(2, n);
-                         pstmt.setString(3, productdto.getProductCode());
-                         pstmt.executeUpdate();
-                    }else if(productdto.getQuantity()<quantity){
-                         String q = "UPDATE currentstocks SET productname=?,quantity=quantity-? WHERE productcode=?";
-                         pstmt = (PreparedStatement) con.prepareStatement(q);
-                         pstmt.setString(1, productdto.getProductName());
-                         int n=quantity-productdto.getQuantity();
-                         pstmt.setDouble(2, n);
-                         pstmt.setString(3, productdto.getProductCode());
-                         pstmt.executeUpdate();
-                    }else{
-                        String q = "UPDATE currentstocks SET productname=?,quantity=? WHERE productcode=?";
-                        pstmt = (PreparedStatement) con.prepareStatement(q);
-                        pstmt.setString(1, productdto.getProductName());
-                        pstmt.setDouble(2, productdto.getQuantity());
-                        pstmt.setString(3, productdto.getProductCode());
-                        pstmt.executeUpdate();
-                    }   
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }            
     }
-    
-    public void editStock2(ProductDTO productdto,int quantity,String pCode){
-        String productCode=productdto.getProductCode();
-        if(checkStock(productCode)==true){
-            try{
-                String q = "UPDATE currentstocks SET productname=?,quantity=quantity+? WHERE productcode=?";
-                pstmt = (PreparedStatement) con.prepareStatement(q);
-                pstmt.setString(1, productdto.getProductName());
-                pstmt.setInt(2, productdto.getQuantity());
-                pstmt.setString(3, productdto.getProductCode());
-                pstmt.executeUpdate();
-
-                String q2 = "UPDATE currentstocks SET quantity=quantity-? WHERE productcode=?";
-                pstmt = (PreparedStatement) con.prepareStatement(q2);
-                pstmt.setInt(1, productdto.getQuantity());
-                pstmt.setString(2, pCode);
-                pstmt.executeUpdate();
-            }catch(Exception e){
-                 e.printStackTrace();   
-            }
-        }else if(checkStock(productCode)==false){
-            try{
-                String q = "INSERT INTO currentstocks VALUES(?,?,?)";
-                pstmt = (PreparedStatement) con.prepareStatement(q);
-                pstmt.setString(1, productdto.getProductCode());
-                pstmt.setString(2, productdto.getProductName());
-                pstmt.setInt(3, productdto.getQuantity());
-                pstmt.executeUpdate();
-                JOptionPane.showMessageDialog(null,productdto.getProductCode()+" "+productdto.getProductName());
-                
-                String q2 = "UPDATE currentstocks SET quantity=quantity-? WHERE productcode=?";
-                pstmt = (PreparedStatement) con.prepareStatement(q2);
-                pstmt.setInt(1, productdto.getQuantity());
-                pstmt.setString(2, pCode);
-                pstmt.executeUpdate();
-
-            }catch(Exception e){
-                 e.printStackTrace();   
-            }
-         }
-         
-    }
-    */
 
     public void editStock(String val, int q) {
         try {
@@ -365,7 +277,7 @@ public class ProductDAO {
             rs = stmt.executeQuery(query);
             if (rs.next()) {
                 String qry = "UPDATE currentstocks SET quantity=quantity-? WHERE productcode=?";
-                pstmt = (PreparedStatement) con.prepareStatement(qry);
+                pstmt = con.prepareStatement(qry);
                 pstmt.setDouble(1, q);
                 pstmt.setString(2, val);
                 pstmt.executeUpdate();
@@ -381,7 +293,7 @@ public class ProductDAO {
             rs = stmt.executeQuery(query);
             if (rs.next()) {
                 String qry = "UPDATE currentstocks SET quantity=quantity+? WHERE productcode=?";
-                pstmt = (PreparedStatement) con.prepareStatement(qry);
+                pstmt = con.prepareStatement(qry);
                 pstmt.setDouble(1, q);
                 pstmt.setString(2, val);
                 pstmt.executeUpdate();
@@ -436,7 +348,6 @@ public class ProductDAO {
         String sellDate = productDTO.getSellDate();
         String productCode = productDTO.getProductCode();
         String customersCode = productDTO.getCustomerCode();
-        Double sellingPrice = productDTO.getSellingPrice();
         Double totalRevenue = productDTO.getTotalRevenue();
         int qty = productDTO.getQuantity();
         try {
@@ -452,8 +363,10 @@ public class ProductDAO {
                 JOptionPane.showMessageDialog(null, "Invalid Quantity");
             } else {
                 try {
-                    String q = "UPDATE currentstocks SET quantity=quantity-'" + productDTO.getQuantity() + "' WHERE productcode='" + productDTO.getProductCode() + "'";
-                    String qry = "INSERT INTO salesreport(date,productcode,customercode,quantity,revenue,soldby) VALUES('" + sellDate + "','" + productCode + "','" + customersCode + "','" + qty + "','" + totalRevenue + "','" + username + "')";
+                    String q = "UPDATE currentstocks SET quantity=quantity-'" + productDTO.getQuantity() + "' WHERE " +
+                        "productcode='" + productDTO.getProductCode() + "'";
+                    String qry = "INSERT INTO salesreport(date,productcode,customercode,quantity,revenue,soldby) " +
+                        "VALUES('" + sellDate + "','" + productCode + "','" + customersCode + "','" + qty + "','" + totalRevenue + "','" + username + "')";
                     stmt.executeUpdate(q);
                     stmt.executeUpdate(qry);
                     JOptionPane.showMessageDialog(null, "SUCCESSFULLY SOLD");
@@ -474,41 +387,46 @@ public class ProductDAO {
             e.printStackTrace();
         }
         return rs;
-    }//end of method getQueryResult
+    }
 
     public ResultSet getPurchaseResult() {
         try {
-            String query = "SELECT purchaseid,purchaseinfo.productcode,productname,quantity,totalcost FROM purchaseinfo INNER JOIN products ON products.productcode=purchaseinfo.productcode ORDER BY purchaseid";
+            String query = "SELECT purchaseid,purchaseinfo.productcode,productname,quantity,totalcost FROM " +
+                "purchaseinfo INNER JOIN products ON products.productcode=purchaseinfo.productcode ORDER BY purchaseid";
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return rs;
-    }//end of method getQueryResult
+    }
 
     public ResultSet getQueryResultOfCurrentStocks() {
         try {
-            String query = "SELECT currentstocks.productcode,products.productname,currentstocks.quantity,products.costprice,products.sellingprice FROM currentstocks INNER JOIN products ON currentstocks.productcode=products.productcode";
+            String query = "SELECT currentstocks.productcode,products.productname,currentstocks.quantity,products" +
+                ".costprice,products.sellingprice FROM currentstocks INNER JOIN products ON currentstocks" +
+                ".productcode=products.productcode";
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return rs;
-    }//end of method getQueryResult
+    }
 
     public ResultSet getSalesReportQueryResult() {
         try {
-            String query = "SELECT salesid,salesreport.productcode,productname,salesreport.quantity,revenue,soldby FROM salesreport INNER JOIN products ON salesreport.productcode=products.productcode";
+            String query = "SELECT salesid,salesreport.productcode,productname,salesreport.quantity,revenue,soldby " +
+                "FROM salesreport INNER JOIN products ON salesreport.productcode=products.productcode";
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return rs;
-    }//end of method getQueryResult
+    }
 
     public ResultSet getSearchProductsQueryResult(String searchTxt) {
         try {
-            String query = "SELECT pid,productcode,productname,costprice,sellingprice,brand FROM products WHERE productname LIKE '%" + searchTxt + "%' OR brand LIKE '%" + searchTxt + "%' OR productcode LIKE '%" + searchTxt + "%'";
+            String query = "SELECT pid,productcode,productname,costprice,sellingprice,brand FROM products WHERE " +
+                "productname LIKE '%" + searchTxt + "%' OR brand LIKE '%" + searchTxt + "%' OR productcode LIKE '%" + searchTxt + "%'";
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -518,7 +436,9 @@ public class ProductDAO {
 
     public ResultSet getSearchPurchaseQueryResult(String searchTxt) {
         try {
-            String query = "SELECT purchaseid,purchaseinfo.productcode,productname,quantity,totalcost FROM purchaseinfo INNER JOIN products ON products.productcode=purchaseinfo.productcode WHERE purchaseinfo.productcode LIKE '%" + searchTxt + "%' OR productname LIKE '%" + searchTxt + "%' ORDER BY purchaseid";
+            String query = "SELECT purchaseid,purchaseinfo.productcode,productname,quantity,totalcost FROM " +
+                "purchaseinfo INNER JOIN products ON products.productcode=purchaseinfo.productcode WHERE purchaseinfo" +
+                ".productcode LIKE '%" + searchTxt + "%' OR productname LIKE '%" + searchTxt + "%' ORDER BY purchaseid";
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -528,7 +448,9 @@ public class ProductDAO {
 
     public ResultSet getSearchSalesQueryResult(String searchTxt) {
         try {
-            String query = "SELECT salesid,salesreport.productcode,productname,quantity,revenue,soldby FROM salesreport INNER JOIN products ON products.productcode=salesreport.productcode INNER JOIN customers ON customers.customercode=salesreport.customercode WHERE salesreport.productcode LIKE '%" + searchTxt + "%' OR productname LIKE '%" + searchTxt + "%' OR soldby LIKE '%" + searchTxt + "%' OR fullname LIKE '%" + searchTxt + "%' ORDER BY salesid";
+            String query = "SELECT salesid,salesreport.productcode,productname,quantity,revenue,soldby FROM " +
+                "salesreport INNER JOIN products ON products.productcode=salesreport.productcode INNER JOIN customers" +
+                " ON customers.customercode=salesreport.customercode WHERE salesreport.productcode LIKE '%" + searchTxt + "%' OR productname LIKE '%" + searchTxt + "%' OR soldby LIKE '%" + searchTxt + "%' OR fullname LIKE '%" + searchTxt + "%' ORDER BY salesid";
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -549,7 +471,8 @@ public class ProductDAO {
     public String getProductsSupplier(int id) {
         String sup = null;
         try {
-            String query = "SELECT fullname FROM suppliers INNER JOIN purchaseinfo ON suppliers.suppliercode=purchaseinfo.suppliercode WHERE purchaseid='" + id + "'";
+            String query = "SELECT fullname FROM suppliers INNER JOIN purchaseinfo ON suppliers" +
+                ".suppliercode=purchaseinfo.suppliercode WHERE purchaseid='" + id + "'";
             rs = stmt.executeQuery(query);
             if (rs.next()) {
                 sup = rs.getString("fullname");
@@ -563,7 +486,8 @@ public class ProductDAO {
     public String getProductsCustomer(int id) {
         String cus = null;
         try {
-            String query = "SELECT fullname FROM customers INNER JOIN salesreport ON customers.customercode=salesreport.customercode WHERE salesid='" + id + "'";
+            String query = "SELECT fullname FROM customers INNER JOIN salesreport ON customers" +
+                ".customercode=salesreport.customercode WHERE salesid='" + id + "'";
             rs = stmt.executeQuery(query);
             if (rs.next()) {
                 cus = rs.getString("fullname");
@@ -614,12 +538,12 @@ public class ProductDAO {
         Vector<Vector<Object>> data = tableModel(rs, columnNames);
 
         return new DefaultTableModel(data, columnNames);
-    }//end of method DefaultTableModel
+    }
 
 
     public Vector<String> getColumnNames(ResultSet rs) throws SQLException {
-        ResultSetMetaData metaData = rs.getMetaData(); //resultset ko metadata
-        Vector<String> columnNames = new Vector<String>();
+        ResultSetMetaData metaData = rs.getMetaData();
+        Vector<String> columnNames = new Vector<>();
         int columnCount = metaData.getColumnCount();
 
         for (int column = 1; column <= columnCount; column++) {
@@ -631,10 +555,10 @@ public class ProductDAO {
 
     public Vector<Vector<Object>> tableModel(ResultSet rs, Vector<String> columnNames) throws SQLException {
         int columnCount = columnNames.size();
-        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+        Vector<Vector<Object>> data = new Vector<>();
 
         while (rs.next()) {
-            Vector<Object> vector = new Vector<Object>();
+            Vector<Object> vector = new Vector<>();
             for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                 vector.add(rs.getObject(columnIndex));
             }

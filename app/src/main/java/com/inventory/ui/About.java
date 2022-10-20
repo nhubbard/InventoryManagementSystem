@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import static javax.swing.GroupLayout.*;
+import static javax.swing.GroupLayout.Alignment.*;
 import static javax.swing.LayoutStyle.*;
 
 public class About extends JPanel {
@@ -53,18 +54,18 @@ public class About extends JPanel {
         GroupLayout layeredPaneLayout = new GroupLayout(layeredPane);
         layeredPane.setLayout(layeredPaneLayout);
         layeredPaneLayout.setHorizontalGroup(
-                layeredPaneLayout.createParallelGroup(Alignment.LEADING)
-                        .addGroup(layeredPaneLayout.createSequentialGroup()
-                                .addGap(150, 150, 150)
-                                .addGroup(layeredPaneLayout.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(developerNameLabel)
-                                        .addComponent(developerEmailLabel)
-                                        .addComponent(developerWebsiteLabel)
-                                        .addComponent(developerInfoLabel))
-                                .addContainerGap(133, Short.MAX_VALUE))
+            layeredPaneLayout.createParallelGroup(LEADING)
+                .addGroup(layeredPaneLayout.createSequentialGroup()
+                    .addGap(150, 150, 150)
+                    .addGroup(layeredPaneLayout.createParallelGroup(LEADING)
+                        .addComponent(developerNameLabel)
+                        .addComponent(developerEmailLabel)
+                        .addComponent(developerWebsiteLabel)
+                        .addComponent(developerInfoLabel))
+                    .addContainerGap(133, Short.MAX_VALUE))
         );
         layeredPaneLayout.setVerticalGroup(
-            layeredPaneLayout.createParallelGroup(Alignment.LEADING)
+            layeredPaneLayout.createParallelGroup(LEADING)
                 .addGroup(layeredPaneLayout.createSequentialGroup()
                     .addGap(19, 19, 19)
                     .addComponent(developerInfoLabel)
@@ -80,14 +81,14 @@ public class About extends JPanel {
         GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(Alignment.LEADING)
+            mainPanelLayout.createParallelGroup(LEADING)
                 .addGroup(mainPanelLayout.createSequentialGroup()
                     .addGap(44, 44, 44)
                     .addComponent(layeredPane, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
                     .addContainerGap(176, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(Alignment.LEADING)
+            mainPanelLayout.createParallelGroup(LEADING)
                 .addGroup(mainPanelLayout.createSequentialGroup()
                     .addGap(35, 35, 35)
                     .addComponent(layeredPane, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
@@ -97,13 +98,13 @@ public class About extends JPanel {
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(Alignment.LEADING)
+            layout.createParallelGroup(LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addComponent(mainPanel, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(Alignment.LEADING)
+            layout.createParallelGroup(LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addComponent(mainPanel, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE))

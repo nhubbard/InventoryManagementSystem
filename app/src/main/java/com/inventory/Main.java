@@ -7,6 +7,7 @@
 package com.inventory;
 
 import com.inventory.ui.LoginDialog;
+
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -15,8 +16,6 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author ADMIN
  */
 public class Main {
-    public Main() {}
-
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

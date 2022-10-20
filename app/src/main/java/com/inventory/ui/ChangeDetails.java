@@ -1,25 +1,21 @@
 package com.inventory.ui;
 
 import com.inventory.dao.UserDAO;
+import com.inventory.ui.util.MouseClickedListener;
 
-import java.awt.Color;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.util.Objects;
-import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
-import javax.swing.border.LineBorder;
+
+import static javax.swing.GroupLayout.Alignment.*;
+import static javax.swing.GroupLayout.DEFAULT_SIZE;
+import static javax.swing.GroupLayout.PREFERRED_SIZE;
+import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
+import static javax.swing.LayoutStyle.ComponentPlacement.UNRELATED;
 
 public class ChangeDetails extends JPanel {
     String user;
@@ -75,7 +71,6 @@ public class ChangeDetails extends JPanel {
         inputPanel.setBorder(BorderFactory.createTitledBorder(""));
 
         usernameText.setBorder(new LineBorder(new Color(204, 204, 204), 1, true));
-        usernameText.addActionListener(this::usernameTextActionPerformed);
 
         usernameLabel.setText("Username");
         passwordLabel.setText("Old Password");
@@ -88,22 +83,15 @@ public class ChangeDetails extends JPanel {
 
         phoneLabel.setText("Phone");
 
-        clearButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/com/inventory/ui/images/clear.png")))); // NOI18N
-        clearButton.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                clearButtonMouseClicked(evt);
-            }
-        });
+        clearButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/com/inventory/ui/images" +
+            "/clear.png"))));
+        clearButton.addMouseListener((MouseClickedListener) this::clearButtonMouseClicked);
 
-        editButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/com/inventory/ui/images/editPeople.png")))); // NOI18N
-        editButton.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                editButtonMouseClicked(evt);
-            }
-        });
+        editButton.setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/com/inventory/ui/images" +
+            "/editPeople.png"))));
+        editButton.addMouseListener((MouseClickedListener) this::editButtonMouseClicked);
 
         passwordText.setBorder(new LineBorder(new Color(204, 204, 204), 1, true));
-        passwordText.addActionListener(this::passwordTextActionPerformed);
 
         passwordLabelOne.setText("Category");
 
@@ -116,12 +104,84 @@ public class ChangeDetails extends JPanel {
         passwordLabelTwo.setText("New Password");
 
         newPasswordText.setBorder(new LineBorder(new Color(204, 204, 204), 1, true));
-        newPasswordText.addActionListener(this::newPasswordTxtActionPerformed);
 
         GroupLayout inputPanelLayout = new GroupLayout(inputPanel);
         inputPanel.setLayout(inputPanelLayout);
-        inputPanelLayout.setHorizontalGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(inputPanelLayout.createSequentialGroup().addContainerGap().addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(inputPanelLayout.createSequentialGroup().addGap(10, 10, 10).addComponent(updateButtonLabel).addGap(23, 23, 23).addComponent(clearButtonLabel)).addGroup(inputPanelLayout.createSequentialGroup().addComponent(editButton).addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED).addComponent(clearButton)).addGroup(inputPanelLayout.createSequentialGroup().addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(passwordLabelTwo, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE).addComponent(locationLabel).addComponent(fullNameLabel).addComponent(phoneLabel).addComponent(usernameLabel, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE).addComponent(passwordLabelOne, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE).addComponent(passwordLabel, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)).addGap(18, 18, 18).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(fullNameText, GroupLayout.Alignment.TRAILING).addComponent(locationText, GroupLayout.Alignment.TRAILING).addComponent(phoneText, GroupLayout.Alignment.TRAILING).addComponent(usernameText, GroupLayout.Alignment.TRAILING).addComponent(passwordText).addComponent(categoryText).addComponent(newPasswordText)))).addGap(34, 34, 34)));
-        inputPanelLayout.setVerticalGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(inputPanelLayout.createSequentialGroup().addGap(20, 20, 20).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(fullNameText, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE).addComponent(fullNameLabel)).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(locationLabel).addComponent(locationText, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(phoneLabel).addComponent(phoneText, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(usernameText, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE).addComponent(usernameLabel, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(passwordText, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE).addComponent(passwordLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(newPasswordText, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE).addComponent(passwordLabelTwo, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(passwordLabelOne, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE).addComponent(categoryText, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)).addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(editButton).addComponent(clearButton)).addGap(12, 12, 12).addGroup(inputPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(updateButtonLabel).addComponent(clearButtonLabel)).addGap(29, 29, 29)));
+        inputPanelLayout.setHorizontalGroup(
+            inputPanelLayout.createParallelGroup(LEADING)
+                .addGroup(
+                    inputPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(
+                            inputPanelLayout.createParallelGroup(LEADING)
+                                .addGroup(inputPanelLayout.createSequentialGroup()
+                                    .addGap(10, 10, 10)
+                                    .addComponent(updateButtonLabel)
+                                    .addGap(23, 23, 23)
+                                    .addComponent(clearButtonLabel))
+                                .addGroup(inputPanelLayout.createSequentialGroup()
+                                    .addComponent(editButton)
+                                    .addPreferredGap(UNRELATED)
+                                    .addComponent(clearButton))
+                                .addGroup(inputPanelLayout.createSequentialGroup()
+                                    .addGroup(inputPanelLayout.createParallelGroup(LEADING)
+                                        .addComponent(passwordLabelTwo, PREFERRED_SIZE, 92, PREFERRED_SIZE)
+                                        .addComponent(locationLabel)
+                                        .addComponent(fullNameLabel)
+                                        .addComponent(phoneLabel)
+                                        .addComponent(usernameLabel, PREFERRED_SIZE, 61, PREFERRED_SIZE)
+                                        .addComponent(passwordLabelOne, PREFERRED_SIZE, 61, PREFERRED_SIZE)
+                                        .addComponent(passwordLabel, PREFERRED_SIZE, 92, PREFERRED_SIZE))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(inputPanelLayout.createParallelGroup(LEADING)
+                                        .addComponent(fullNameText, TRAILING)
+                                        .addComponent(locationText, TRAILING)
+                                        .addComponent(phoneText, TRAILING)
+                                        .addComponent(usernameText, TRAILING)
+                                        .addComponent(passwordText)
+                                        .addComponent(categoryText)
+                                        .addComponent(newPasswordText))))
+                        .addGap(34, 34, 34)));
+        inputPanelLayout.setVerticalGroup(
+            inputPanelLayout.createParallelGroup(LEADING)
+                .addGroup(inputPanelLayout.createSequentialGroup()
+                    .addGap(20, 20, 20)
+                    .addGroup(inputPanelLayout.createParallelGroup(BASELINE)
+                        .addComponent(fullNameText, PREFERRED_SIZE, 32, PREFERRED_SIZE)
+                        .addComponent(fullNameLabel))
+                    .addPreferredGap(RELATED)
+                    .addGroup(inputPanelLayout.createParallelGroup(BASELINE)
+                        .addComponent(locationLabel)
+                        .addComponent(locationText, PREFERRED_SIZE, 32, PREFERRED_SIZE))
+                    .addPreferredGap(RELATED)
+                    .addGroup(inputPanelLayout.createParallelGroup(BASELINE)
+                        .addComponent(phoneLabel)
+                        .addComponent(phoneText, PREFERRED_SIZE, 32, PREFERRED_SIZE))
+                    .addPreferredGap(RELATED)
+                    .addGroup(inputPanelLayout.createParallelGroup(LEADING)
+                        .addComponent(usernameText, PREFERRED_SIZE, 32, PREFERRED_SIZE)
+                        .addComponent(usernameLabel, PREFERRED_SIZE, 31, PREFERRED_SIZE))
+                    .addPreferredGap(RELATED)
+                    .addGroup(inputPanelLayout.createParallelGroup(BASELINE)
+                        .addComponent(passwordText, PREFERRED_SIZE, 31, PREFERRED_SIZE)
+                        .addComponent(passwordLabel, DEFAULT_SIZE, DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addPreferredGap(RELATED)
+                    .addGroup(inputPanelLayout.createParallelGroup(BASELINE)
+                        .addComponent(newPasswordText, PREFERRED_SIZE, 31, PREFERRED_SIZE)
+                        .addComponent(passwordLabelTwo, DEFAULT_SIZE, DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addPreferredGap(RELATED)
+                    .addGroup(inputPanelLayout.createParallelGroup(LEADING)
+                        .addComponent(passwordLabelOne, PREFERRED_SIZE, 36, PREFERRED_SIZE)
+                        .addComponent(categoryText, PREFERRED_SIZE, 32, PREFERRED_SIZE))
+                    .addPreferredGap(UNRELATED)
+                    .addGroup(inputPanelLayout.createParallelGroup(LEADING)
+                        .addComponent(editButton)
+                        .addComponent(clearButton))
+                    .addGap(12, 12, 12)
+                    .addGroup(inputPanelLayout.createParallelGroup(BASELINE)
+                        .addComponent(updateButtonLabel)
+                        .addComponent(clearButtonLabel))
+                    .addGap(29, 29, 29)));
 
         tabbedPane.addTab("Profile Detail", inputPanel);
 
@@ -130,30 +190,35 @@ public class ChangeDetails extends JPanel {
 
         GroupLayout mainPanelLayout = new GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(mainPanelLayout.createSequentialGroup().addGap(172, 172, 172).addGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(editProfileButton).addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 381, GroupLayout.PREFERRED_SIZE)).addContainerGap(126, Short.MAX_VALUE)));
-        mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(mainPanelLayout.createSequentialGroup().addContainerGap().addComponent(editProfileButton).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(tabbedPane).addContainerGap()));
+        mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(LEADING)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addGap(172, 172, 172)
+                .addGroup(mainPanelLayout.createParallelGroup(LEADING)
+                    .addComponent(editProfileButton)
+                    .addComponent(tabbedPane, PREFERRED_SIZE, 381, PREFERRED_SIZE))
+                .addContainerGap(126, Short.MAX_VALUE)));
+        mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(LEADING)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(editProfileButton)
+                .addPreferredGap(RELATED)
+                .addComponent(tabbedPane)
+                .addContainerGap()));
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addComponent(mainPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addGap(0, 0, Short.MAX_VALUE)));
-    }
-
-    private void usernameTextActionPerformed(ActionEvent evt) {
-        // This does nothing.
-    }
-
-    private void passwordTextActionPerformed(ActionEvent evt) {
-        // This does nothing.
+        layout.setHorizontalGroup(layout.createParallelGroup(LEADING)
+            .addComponent(mainPanel, DEFAULT_SIZE, DEFAULT_SIZE, Short.MAX_VALUE));
+        layout.setVerticalGroup(layout.createParallelGroup(LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(mainPanel, PREFERRED_SIZE, DEFAULT_SIZE, PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE)));
     }
 
     private void editButtonMouseClicked(MouseEvent ignoredEvt) {
-        if (fullNameText.getText().equals("") ||
-            locationText.getText().equals("") ||
-            phoneText.getText().equals("") ||
-            usernameText.getText().equals("") ||
-            new String(passwordText.getPassword()).equals("") ||
-            new String(newPasswordText.getPassword()).equals("")) {
+        if (fullNameText.getText().equals("") || locationText.getText().equals("") || phoneText.getText().equals("") ||
+                usernameText.getText().equals("") || new String(passwordText.getPassword()).equals("") ||
+                new String(newPasswordText.getPassword()).equals("")) {
             JOptionPane.showMessageDialog(null, "Please fill all the fields!");
         } else {
             String encryptPass = new Users().encryptPassword(new String(passwordText.getPassword()));
@@ -170,7 +235,6 @@ public class ChangeDetails extends JPanel {
         }
     }
 
-
     private void editProfileButtonActionPerformed(ActionEvent evt) {
         passwordText.setEnabled(true);
         newPasswordText.setEnabled(true);
@@ -179,10 +243,6 @@ public class ChangeDetails extends JPanel {
     private void clearButtonMouseClicked(MouseEvent ignoredEvt) {
         passwordText.setText("");
         newPasswordText.setText("");
-    }
-
-    private void newPasswordTxtActionPerformed(ActionEvent evt) {
-        // This does nothing.
     }
 
     private JTextField categoryText;

@@ -43,7 +43,9 @@ public class CustomerDAO {
      */
     public void addCustomerDAO(CustomerDTO customerdto) {
         try {
-            String findCustomersByNameLocationAndPhone = "SELECT * FROM customers WHERE fullname='" + customerdto.getFullName() + "' AND location='" + customerdto.getLocation() + "' AND phone='" + customerdto.getPhone() + "'";
+            String findCustomersByNameLocationAndPhone =
+                "SELECT * FROM customers WHERE fullname='" + customerdto.getFullName() + "' AND location='" +
+                    customerdto.getLocation() + "' AND phone='" + customerdto.getPhone() + "'";
             rs = stmt.executeQuery(findCustomersByNameLocationAndPhone);
             if (rs.next()) {
                 JOptionPane.showMessageDialog(null, "Same Customer has already been added!");
@@ -53,7 +55,7 @@ public class CustomerDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }//end of method addCustomerDTO
+    }
 
     /***
      * Refactoring name: RENAME VARIABLE
@@ -65,7 +67,7 @@ public class CustomerDAO {
     public void addFunction(CustomerDTO customerdto) {
         try {
             String customerCode = null;
-            String oldCustomerCode = null;
+            String oldCustomerCode;
             String getAllCustomers = "SELECT * FROM customers";
             rs = stmt.executeQuery(getAllCustomers);
             if (!rs.next()) {
@@ -75,13 +77,13 @@ public class CustomerDAO {
                 rs = stmt.executeQuery(getAllCustomersInDescOrder);
                 if (rs.next()) {
                     oldCustomerCode = rs.getString("customercode");
-                    Integer scode = Integer.parseInt(oldCustomerCode.substring(3));
+                    int scode = Integer.parseInt(oldCustomerCode.substring(3));
                     scode++;
                     customerCode = "cus" + scode;
                 }
             }
             String insertCustomers = "INSERT INTO customers VALUES(null,?,?,?,?)";
-            pstmt = (PreparedStatement) con.prepareStatement(insertCustomers);
+            pstmt = con.prepareStatement(insertCustomers);
             pstmt.setString(1, customerCode);
             pstmt.setString(2, customerdto.getFullName());
             pstmt.setString(3, customerdto.getLocation());
@@ -100,7 +102,7 @@ public class CustomerDAO {
     public void editCustomerDAO(CustomerDTO customerdto) {
         try {
             String updateCustomerDetails = "UPDATE customers SET fullname=?,location=?,phone=? WHERE customercode=?";
-            pstmt = (PreparedStatement) con.prepareStatement(updateCustomerDetails);
+            pstmt = con.prepareStatement(updateCustomerDetails);
             pstmt.setString(1, customerdto.getFullName());
             pstmt.setString(2, customerdto.getLocation());
             pstmt.setString(3, customerdto.getPhone());
@@ -137,36 +139,9 @@ public class CustomerDAO {
      */
     public ResultSet getQueryResult() {
         try {
-            String getCustomersDetails = "SELECT customercode AS CustomerCode, fullname AS Name, location AS Location, phone AS Phone FROM customers";
+            String getCustomersDetails = "SELECT customercode AS CustomerCode, fullname AS Name, location AS " +
+                "Location, phone AS Phone FROM customers";
             rs = stmt.executeQuery(getCustomersDetails);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return rs;
-    }//end of method getQueryResult
-
-    /***
-     * Refactoring name: RENAME VARIABLE
-     * Changed variable name from query => getCustomersWithCredit
-     */
-    public ResultSet getCreditCustomersQueryResult() {
-        try {
-            String getCustomersWithCredit = "SELECT * FROM customers WHERE credit>0";
-            rs = stmt.executeQuery(getCustomersWithCredit);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return rs;
-    }
-
-    /***
-     * Refactoring name: RENAME VARIABLE
-     * Changed variable name from query => getCustomersWithDebit
-     */
-    public ResultSet getDebitCustomersQueryResult() {
-        try {
-            String getCustomersWithDebit = "SELECT * FROM customers WHERE credit=0";
-            rs = stmt.executeQuery(getCustomersWithDebit);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -179,7 +154,8 @@ public class CustomerDAO {
      */
     public ResultSet getSearchCustomersQueryResult(String searchTxt) {
         try {
-            String getCustomers = "SELECT * FROM customers WHERE fullname LIKE '%" + searchTxt + "%' OR location LIKE '%" + searchTxt + "%' OR customercode LIKE '%" + searchTxt + "%' OR phone LIKE '%" + searchTxt + "%'";
+            String getCustomers = "SELECT * FROM customers WHERE fullname LIKE '%" + searchTxt + "%' OR location LIKE" +
+                " '%" + searchTxt + "%' OR customercode LIKE '%" + searchTxt + "%' OR phone LIKE '%" + searchTxt + "%'";
             rs = stmt.executeQuery(getCustomers);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -207,7 +183,9 @@ public class CustomerDAO {
      */
     public ResultSet getProductsName(String productCode) {
         try {
-            String getCustomersByProductCode = "SELECT productname, currentstocks.quantity FROM products INNER JOIN currentstocks ON products.productcode=currentstocks.productcode WHERE currentstocks.productcode='" + productCode + "'";
+            String getCustomersByProductCode = "SELECT productname, currentstocks.quantity FROM products INNER JOIN " +
+                "currentstocks ON products.productcode=currentstocks.productcode WHERE currentstocks.productcode='" +
+                productCode + "'";
             rs = stmt.executeQuery(getCustomersByProductCode);
         } catch (Exception e) {
             e.printStackTrace();
@@ -215,24 +193,23 @@ public class CustomerDAO {
         return rs;
     }
 
-    //start of method DefaultTableModel
     public DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
-        ResultSetMetaData metaData = rs.getMetaData(); //resultset ko metadata
-        Vector<String> columnNames = new Vector<String>();
+        ResultSetMetaData metaData = rs.getMetaData();
+        Vector<String> columnNames = new Vector<>();
         int columnCount = metaData.getColumnCount();
 
         for (int column = 1; column <= columnCount; column++) {
             columnNames.add(metaData.getColumnName(column));
         }
 
-        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+        Vector<Vector<Object>> data = new Vector<>();
         while (rs.next()) {
-            Vector<Object> vector = new Vector<Object>();
+            Vector<Object> vector = new Vector<>();
             for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                 vector.add(rs.getObject(columnIndex));
             }
             data.add(vector);
         }
         return new DefaultTableModel(data, columnNames);
-    }//end of method DefaultTableModel
+    }
 }
